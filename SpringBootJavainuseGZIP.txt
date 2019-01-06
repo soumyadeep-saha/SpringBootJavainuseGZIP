@@ -1,0 +1,158 @@
+SpringBootJavainuseGZIP
+
+What is GZIP? Need for it?
+https://checkgzipcompression.com/
+When a user hits the website a call is made to the server to return the requested files. If these requested files are large, it takes a longer time to reach the browser and get displayed. Gzip compresses the webpages and style sheets before sending them over to the browser. This reduces the page loading time, less bandwidth usage and better user experience.
+In the browser, the gzip file content is unzipped or uncompressed.
+
+In this tutorial we will implement GZIP at the tomcat level. We will see how to implement this for
+Deploying Spring Boot Application for Embedded Tomcat.
+Deploying Spring Boot Application as war to external Tomcat.
+
+Deploying Spring Boot Application for Embedded Tomcat
+In previous example we had implemented a Spring Boot File download Example(SpringBootJavainuseFileDownload)
+We will be using the same example to implement GZIP.
+Start the Application, and go to http://localhost:8080/download/file/487334495-6740.jpg We can see the image inline as follows
+In the developer tools-> network we can see that there is no encoding present.
+
+Next create application.properties. Here we enable with following MIME types-
+server.compression.enabled: true
+server.compression.mime-types=application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css,image/jpeg
+
+Start the Application again, and go to http://localhost:8080/download/file/487334495-6740.jpg
+This time in developer tools-> network we can see that there is gzip encoding present.
+Content-Encoding: gzip
+
+Deploying Spring Boot Application as war to external Tomcat
+Next if the application is to be deployed as a war file in external Tomcat then we will need to modify the code on existing SpringBootJavainuseFileDownload application
+Create the class that extends SpringBootServletInitializer class.
+package com.javainuse;
+
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
+public class ServletInitializer extends SpringBootServletInitializer {
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(SpringBootFileDownoad.class);
+	}
+}
+
+In pom.xml add the packaging as war
+<packaging>war</packaging>
+
+Finally in the server.xml in tomcat, in connector tag enable compression and specify the MIME types-
+<Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443" 
+			   compression="on"
+			   compressionMinSize="1024"
+			   noCompressionUserAgents="gozilla, traviata"
+			   compressableMimeType="application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css,image/jpeg" />
+
+			   
+Compile the application, this creates a war file. Copy this file in the webapps folder and start tomcat. Go to http://localhost:8080/download/file/487334495-6740.jpg
+
+
+Spring Boot + GZIP - Hello World Example
+In this example we will learn how to to enable compression for a Spring Boot application using GZIP.
+What is GZIP? Need for it?
+When a user hits the website a call is made to the server to return the requested files. If these requested files are large, it takes a longer time to reach the browser and get displayed.
+Gzip compresses the webpages and style sheets before sending them over to the browser. This reduces the page loading time, less bandwidth usage and better user experience.
+Consider a scenario when you visit this web site - www.javainuse.com . Then following operations are performed.
+
+ 
+If we enable gzip compression -
+Video
+
+This tutorial is explained in the below Youtube Video.
+
+
+Lets Begin-
+
+In this tutorial we will implement GZIP at the tomcat level. We will see how to implement this for
+Deploying Spring Boot Application for Embedded Tomcat.
+Deploying Spring Boot Application as war to external Tomcat.
+Deploying Spring Boot Application for Embedded Tomcat
+
+In previous example we had implemented a Spring Boot File download Example
+We will be using the same example to implement GZIP.
+The Maven project will be as follows-
+Start the Application, and go to localhost:8080/download/file/boot.jpg We can see the image inline as follows -
+
+ 
+In the developer tools-> network we can see that there is no encoding present.
+Next create application.properties. Here we enable with following MIME types-
+server.compression.enabled: true
+server.compression.mime-types=application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css,image/jpeg
+Start the Application again, and go to localhost:8080/boot/download/file/boot.jpg
+This time in developer tools-> network we can see that there is gzip encoding present.
+Deploying Spring Boot Application as war to external Tomcat
+
+Next if the application is to be deployed as a war file in external Tomcat then we will need to modify the code.
+Maven project will be as follows -
+
+ 
+Create the class that extends SpringBootServletInitializer class.
+package com.javainuse;
+
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
+
+public class ServletInitializer extends SpringBootServletInitializer {
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(SpringBootFileDownoad.class);
+	}
+
+}
+In pom.xml add the packaging as war.
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.javainuse</groupId>
+	<artifactId>boot-filedownload</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.1.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>
+Finally in the server.xml, in connector tag enable compression and specify the MIME types-
+<Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443" 
+			   compression="on"
+			   compressionMinSize="1024"
+			   noCompressionUserAgents="gozilla, traviata"
+			   compressableMimeType="application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css,image/jpeg" />
+ 
+Compile the application, this creates a war file. 
+Copy this file from target folder in the webapps folder and start tomcat. 
+Modify the server.xml in the conf folder. Add  compression="on" and compressableMimeType
+Go to localhost:8080/{war file name}/download/file/boot.jpg
+We can see the content is encoded as gzip.
+Download Source Code
+
+Download it -
+Spring Boot Embedded Container GZIP Example 
+Spring Boot External Container GZIP Example
